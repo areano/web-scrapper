@@ -19,12 +19,12 @@ public class ProductCollectionTest {
     public void addProductShouldUpdateTotal() {
         Product p = createProduct();
         productCollection.add(p);
-        assertEquals(12.3f, productCollection.total(), 0);
+        assertEquals(12.3f, productCollection.getTotal(), 0);
     }
 
     @Test
     public void totalIsZeroIfThereAreNoProducts() {
-        assertEquals(0, productCollection.total(), 0);
+        assertEquals(0, productCollection.getTotal(), 0);
     }
 
     @Test

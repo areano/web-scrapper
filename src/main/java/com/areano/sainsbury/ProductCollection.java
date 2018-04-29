@@ -13,7 +13,7 @@ public class ProductCollection {
         return products.size();
     }
 
-    public float total() {
+    public float getTotal() {
         return (float) products.stream()
                 .mapToDouble(Product::getPrice)
                 .sum();
