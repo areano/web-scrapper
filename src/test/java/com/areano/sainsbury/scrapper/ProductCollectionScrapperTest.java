@@ -1,6 +1,6 @@
 package com.areano.sainsbury.scrapper;
 
-import com.areano.sainsbury.Product;
+import com.areano.sainsbury.ProductCollection;
 import com.areano.sainsbury.scrapper.providers.CustomDocumentProvider;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,7 +10,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,7 +27,7 @@ public class ProductCollectionScrapperTest {
 
     @Test
     public void scrapProductsFromDocuments() {
-        List<Product> products = scrapper.scrap(document);
+        ProductCollection products = scrapper.scrap(document);
         assertEquals(17, products.size());
     }
 }

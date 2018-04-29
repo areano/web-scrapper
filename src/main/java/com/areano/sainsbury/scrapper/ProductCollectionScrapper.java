@@ -1,13 +1,10 @@
 package com.areano.sainsbury.scrapper;
 
-import com.areano.sainsbury.Product;
+import com.areano.sainsbury.ProductCollection;
 import com.areano.sainsbury.scrapper.providers.DocumentProvider;
 import org.jsoup.nodes.Element;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class ProductCollectionScrapper implements ElementScrapper<List<Product>> {
+public class ProductCollectionScrapper implements ElementScrapper<ProductCollection> {
 
     private final ProductScrapper productScrapper;
 
@@ -16,10 +13,14 @@ public class ProductCollectionScrapper implements ElementScrapper<List<Product>>
     }
 
     @Override
-    public List<Product> scrap(Element element) {
-        return element.select(".gridItem")
+    public ProductCollection scrap(Element element) {
+        ProductCollection pc = new ProductCollection();
+
+        element.select(".gridItem")
                 .stream()
                 .map(productScrapper::scrap)
-                .collect(Collectors.toList());
+                .forEach(pc::add);
+
+        return pc;
     }
 }
