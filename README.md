@@ -1,7 +1,7 @@
 # Sainsbury Site Scrapper
 
 ## Introduction
-This is Java 8 console application which scrapes a portion of the Sainsbury’s Groceries website.
+This is a Java 8 console application which scrapes a portion of the Sainsbury’s Groceries website.
 
 ## Building
 In order to build the project please run **mvn clean package**
