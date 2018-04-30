@@ -30,7 +30,7 @@ public class ProductScrapperTest {
         Element element = document.select(".gridItem").first();
         Product p = scrapper.scrap(element);
         assertEquals("Sainsbury's Strawberries 400g", p.getTitle());
-        assertEquals(33, p.getCalories());
+        assertEquals(Integer.valueOf(33), p.getCalories());
         assertEquals(1.75f, p.getPrice(), 0);
         assertEquals("by Sainsbury's strawberries", p.getDescription());
     }

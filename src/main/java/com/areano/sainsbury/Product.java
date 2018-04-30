@@ -3,8 +3,8 @@ package com.areano.sainsbury;
 public class Product {
 
     private String title;
-    private int calories;
-    private float price;
+    private Integer calories;
+    private Float price;
     private String description;
 
     public String getTitle() {
@@ -15,19 +15,19 @@ public class Product {
         this.title = title;
     }
 
-    public int getCalories() {
+    public Integer getCalories() {
         return calories;
     }
 
-    public void setCalories(int calories) {
+    public void setCalories(Integer calories) {
         this.calories = calories;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 

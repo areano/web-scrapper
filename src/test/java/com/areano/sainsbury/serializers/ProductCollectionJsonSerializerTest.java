@@ -4,11 +4,14 @@ import com.areano.sainsbury.Product;
 import com.areano.sainsbury.ProductCollection;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.POJONode;
+import com.fasterxml.jackson.databind.util.RawValue;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ProductCollectionJsonSerializerTest {
 
@@ -18,10 +21,11 @@ public class ProductCollectionJsonSerializerTest {
     @Test
     public void serializeProduct() {
         products.add(createDummyProduct());
-        JsonNode js = serializer.serialize(products);
+        JsonNode j = serializer.serialize(products);
 
-        assertNotNull(js);
-        assertEquals("{\"results\":[{\"title\":\"Title\",\"kcal_per_100g\":20,\"unit_price\":10.2,\"description\":\"Description\"}],\"total\":10.2}", js.toString());
+        assertNotNull(j);
+        assertTrue(j.has("results"));
+        assertEquals("10.20", ((RawValue) ((POJONode) j.get("total")).getPojo()).rawValue().toString());
     }
 
     @Test

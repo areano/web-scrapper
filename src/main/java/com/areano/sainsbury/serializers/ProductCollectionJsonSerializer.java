@@ -12,12 +12,13 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 public class ProductCollectionJsonSerializer {
+    private final static ObjectMapper mapper = createObjectMapper();
+    private final static NumberFormat currencyFormat = createPriceFormatWithTwoDecimalPlaces();
 
-    private ObjectMapper mapper = createObjectMapper();
-
-    public JsonNode serialize(ProductCollection productCollection) {
+    JsonNode serialize(ProductCollection productCollection) {
         return mapper.convertValue(productCollection, JsonNode.class);
     }
 
@@ -25,20 +26,18 @@ public class ProductCollectionJsonSerializer {
         return mapper.writeValueAsString(productCollection);
     }
 
-    private ObjectMapper createObjectMapper() {
-        ObjectMapper om = new ObjectMapper();
+    private static ObjectMapper createObjectMapper() {
+        SimpleModule sm = new SimpleModule()
+                .addSerializer(Product.class, new ProductSerializer())
+                .addSerializer(ProductCollection.class, new CollectionSerializer());
 
-        SimpleModule sm = new SimpleModule();
-        sm.addSerializer(Product.class, new ProductSerializer());
-        sm.addSerializer(ProductCollection.class, new CollectionSerializer());
-
-        om.registerModule(sm);
-        om.enable(SerializationFeature.INDENT_OUTPUT);
-        return om;
+        return new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
+                .registerModule(sm);
     }
 
-    class ProductSerializer extends StdSerializer<Product> {
-
+    static class ProductSerializer extends StdSerializer<Product> {
         ProductSerializer() {
             super(Product.class);
         }
@@ -47,15 +46,26 @@ public class ProductCollectionJsonSerializer {
         public void serialize(Product product, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeStringField("title", product.getTitle());
-            jsonGenerator.writeNumberField("kcal_per_100g", product.getCalories());
-            jsonGenerator.writeNumberField("unit_price", product.getPrice());
+            writeCalories(jsonGenerator, product);
+            writePrice(product, jsonGenerator);
             jsonGenerator.writeStringField("description", product.getDescription());
             jsonGenerator.writeEndObject();
         }
+
+        private void writeCalories(JsonGenerator jsonGenerator, Product product) throws IOException {
+            if (product.getCalories() != null) {
+                jsonGenerator.writeNumberField("kcal_per_100g", product.getCalories());
+            }
+        }
+
+        private void writePrice(Product product, JsonGenerator jsonGenerator) throws IOException {
+            jsonGenerator.writeFieldName("unit_price");
+            jsonGenerator.writeRawValue(currencyFormat.format(product.getPrice()));
+        }
+
     }
 
-    class CollectionSerializer extends StdSerializer<ProductCollection> {
-
+    static class CollectionSerializer extends StdSerializer<ProductCollection> {
         CollectionSerializer() {
             super(ProductCollection.class);
         }
@@ -64,8 +74,20 @@ public class ProductCollectionJsonSerializer {
         public void serialize(ProductCollection productCollection, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
             jsonGenerator.writeStartObject();
             jsonGenerator.writeObjectField("results", productCollection.getProducts());
-            jsonGenerator.writeNumberField("total", productCollection.getTotal());
+            writeTotal(productCollection, jsonGenerator);
             jsonGenerator.writeEndObject();
         }
+
+        private void writeTotal(ProductCollection productCollection, JsonGenerator jsonGenerator) throws IOException {
+            jsonGenerator.writeFieldName("total");
+            jsonGenerator.writeRawValue(currencyFormat.format(productCollection.getTotal()));
+        }
+    }
+
+    private static NumberFormat createPriceFormatWithTwoDecimalPlaces() {
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMinimumFractionDigits(2);
+        nf.setMaximumFractionDigits(2);
+        return nf;
     }
 }
