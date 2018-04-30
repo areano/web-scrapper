@@ -8,7 +8,7 @@ class PriceScrapper implements ElementScrapper<Float> {
         if (element == null) {
             return null;
         }
-        String text = element.select(".pricePerUnit").text();
+        String text = element.selectFirst(".pricePerUnit").text();
         text = text.replace("£", "");
         text = text.replace("/unit", "");
         return Float.valueOf(text);
