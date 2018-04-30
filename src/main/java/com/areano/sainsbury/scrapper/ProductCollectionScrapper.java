@@ -8,7 +8,7 @@ public class ProductCollectionScrapper implements ElementScrapper<ProductCollect
 
     private final ProductScrapper productScrapper;
 
-    ProductCollectionScrapper(DocumentProvider documentProvider) {
+    public ProductCollectionScrapper(DocumentProvider documentProvider) {
         productScrapper = new ProductScrapper(documentProvider);
     }
 
